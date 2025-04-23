@@ -200,8 +200,68 @@ static stock Zmsg_MakeString(dest[], const size = sizeof(dest), const src[],
 	SendClientMessage
 */
 
-stock ZMsg_SendClientMessage(playerid, color, const message[])
+stock ZMsg_SendClientMessage(playerid, color, const message[], OPEN_MP_TAGS:...)
 {
+	const static_args = 3;
+    const args_diff = (3 - static_args) * 4; // format's static args end at index 3, current function's end at static_arg_count. Also * 4 because cells are 4 bytes
+
+    static args;
+    args = numargs();
+
+    if (args > static_args)
+    {
+        static string[256];
+        const string_size = sizeof(string);
+
+        while (--args >= static_args)
+        {
+            #emit LCTRL 5
+            #emit LOAD.alt args
+            #emit SHL.C.alt 2
+            #emit ADD.C 12
+            #emit ADD
+            #emit LOAD.I
+            #emit PUSH.pri
+        }
+
+        #emit PUSH.S message
+        #emit PUSH.C string_size
+        #emit PUSH.C string
+        #emit LOAD.S.pri 8
+        #emit ADD.C args_diff
+        #emit PUSH.pri
+        #emit SYSREQ.C format
+        #emit LCTRL 5
+        #emit SCTRL 4
+
+        new length = strlen(string);
+
+        // shouldn't be shifted
+        if (length <= ZMSG_MAX_CHAT_LENGTH) {
+            return SendClientMessage(playerid, color, string);
+        }
+
+        new
+            bool:is_packed,
+            last_color = -1,
+            result,
+            temp[ZMSG_MAX_CHAT_LENGTH + 1],
+            start_pos,
+            end_pos,
+            line;
+
+        is_packed = string{0} != 0;
+
+        while (end_pos < length) {
+            Zmsg_MakeString(temp, sizeof(temp), string, is_packed, last_color, length, line,
+                            start_pos, end_pos, g_zmsg_HyphenStart, g_zmsg_HyphenStartLength,
+                            g_zmsg_HyphenEnd, g_zmsg_HyphenEndLength);
+            result = SendClientMessage(playerid, color, temp);
+            line++;
+        }
+        return result;
+    }
+
 	new length = strlen(message);
 
 	// shouldn't be shifted
@@ -241,8 +301,68 @@ stock ZMsg_SendClientMessage(playerid, color, const message[])
 	SendClientMessageToAll
 */
 
-stock ZMsg_SendClientMessageToAll(color, const message[])
+stock ZMsg_SendClientMessageToAll(color, const message[], OPEN_MP_TAGS:...)
 {
+    const static_args = 2;
+    const args_diff = (3 - static_args) * 4; // format's static args end at index 3, current function's end at static_arg_count. Also * 4 because cells are 4 bytes
+
+    static args;
+    args = numargs();
+
+    if (args > static_args)
+    {
+        static string[256];
+        const string_size = sizeof(string);
+
+        while (--args >= static_args)
+        {
+            #emit LCTRL 5
+            #emit LOAD.alt args
+            #emit SHL.C.alt 2
+            #emit ADD.C 12
+            #emit ADD
+            #emit LOAD.I
+            #emit PUSH.pri
+        }
+
+        #emit PUSH.S message
+        #emit PUSH.C string_size
+        #emit PUSH.C string
+        #emit LOAD.S.pri 8
+        #emit ADD.C args_diff
+        #emit PUSH.pri
+        #emit SYSREQ.C format
+        #emit LCTRL 5
+        #emit SCTRL 4
+
+        new length = strlen(string);
+
+        // shouldn't be shifted
+        if (length <= ZMSG_MAX_CHAT_LENGTH) {
+            return SendClientMessageToAll(color, string);
+        }
+
+        new
+            bool:is_packed,
+            last_color = -1,
+            result,
+            temp[ZMSG_MAX_CHAT_LENGTH + 1],
+            start_pos,
+            end_pos,
+            line;
+
+        is_packed = string{0} != 0;
+
+        while (end_pos < length) {
+            Zmsg_MakeString(temp, sizeof(temp), string, is_packed, last_color, length, line,
+                            start_pos, end_pos, g_zmsg_HyphenStart, g_zmsg_HyphenStartLength,
+                            g_zmsg_HyphenEnd, g_zmsg_HyphenEndLength);
+            result = SendClientMessageToAll(color, temp);
+            line++;
+        }
+        return result;
+    }
+
 	new length = strlen(message);
 
 	// shouldn't be shifted
@@ -282,8 +402,72 @@ stock ZMsg_SendClientMessageToAll(color, const message[])
 	SendPlayerMessageToPlayer
 */
 
-stock ZMsg_SendPlayerMessageToPlayer(playerid, senderid, const message[])
+stock ZMsg_SendPlayerMessageToPlayer(playerid, senderid, const message[], OPEN_MP_TAGS:...)
 {
+    const static_args = 3;
+    const args_diff = (3 - static_args) * 4; // format's static args end at index 3, current function's end at static_arg_count. Also * 4 because cells are 4 bytes
+
+    static args;
+    args = numargs();
+
+    if (args > static_args)
+    {
+        static string[256];
+        const string_size = sizeof(string);
+
+        while (--args >= static_args)
+        {
+            #emit LCTRL 5
+            #emit LOAD.alt args
+            #emit SHL.C.alt 2
+            #emit ADD.C 12
+            #emit ADD
+            #emit LOAD.I
+            #emit PUSH.pri
+        }
+
+        #emit PUSH.S message
+        #emit PUSH.C string_size
+        #emit PUSH.C string
+        #emit LOAD.S.pri 8
+        #emit ADD.C args_diff
+        #emit PUSH.pri
+        #emit SYSREQ.C format
+        #emit LCTRL 5
+        #emit SCTRL 4
+
+        new length = strlen(string);
+
+        // shouldn't be shifted
+        if (length <= ZMSG_MAX_PLAYER_CHAT_LENGTH) {
+            return SendPlayerMessageToPlayer(playerid, senderid, string);
+        }
+
+        new
+            bool:is_packed,
+            last_color = -1,
+            result,
+            temp[ZMSG_MAX_CHAT_LENGTH + 1],
+            start_pos,
+            end_pos,
+            line;
+
+        is_packed = string{0} != 0;
+
+        while (end_pos < length) {
+            Zmsg_MakeString(temp, sizeof(temp), string, is_packed, last_color, length, line,
+                            start_pos, end_pos, g_zmsg_HyphenStart, g_zmsg_HyphenStartLength,
+                            g_zmsg_HyphenEnd, g_zmsg_HyphenEndLength);
+            if (line == 0) {
+                result = SendPlayerMessageToPlayer(playerid, senderid, temp);
+            } else {
+                SendClientMessage(playerid, -1, temp);
+            }
+            line++;
+        }
+        return result;
+    }
+
 	new length = strlen(message);
 
 	// shouldn't be shifted
@@ -327,8 +511,71 @@ stock ZMsg_SendPlayerMessageToPlayer(playerid, senderid, const message[])
 	SendPlayerMessageToAll
 */
 
-stock ZMsg_SendPlayerMessageToAll(senderid, const message[])
+stock ZMsg_SendPlayerMessageToAll(senderid, const message[], OPEN_MP_TAGS:...)
 {
+    const static_args = 2;
+    const args_diff = (3 - static_args) * 4; // format's static args end at index 3, current function's end at static_arg_count. Also * 4 because cells are 4 bytes
+
+    static args;
+    args = numargs();
+
+    if (args > static_args)
+    {
+        static string[256];
+        const string_size = sizeof(string);
+
+        while (--args >= static_args)
+        {
+            #emit LCTRL 5
+            #emit LOAD.alt args
+            #emit SHL.C.alt 2
+            #emit ADD.C 12
+            #emit ADD
+            #emit LOAD.I
+            #emit PUSH.pri
+        }
+
+        #emit PUSH.S message
+        #emit PUSH.C string_size
+        #emit PUSH.C string
+        #emit LOAD.S.pri 8
+        #emit ADD.C args_diff
+        #emit PUSH.pri
+        #emit SYSREQ.C format
+        #emit LCTRL 5
+        #emit SCTRL 4
+
+        new length = strlen(string);
+
+        // shouldn't be shifted
+        if (length <= ZMSG_MAX_PLAYER_CHAT_LENGTH) {
+            return SendPlayerMessageToAll(senderid, string);
+        }
+
+        new
+            bool:is_packed,
+            last_color = -1,
+            result,
+            temp[ZMSG_MAX_CHAT_LENGTH + 1],
+            start_pos,
+            end_pos,
+            line;
+
+        is_packed = string{0} != 0;
+
+        while (end_pos < length) {
+            Zmsg_MakeString(temp, sizeof(temp), string, is_packed, last_color, length, line,
+                            start_pos, end_pos, g_zmsg_HyphenStart, g_zmsg_HyphenStartLength,
+                            g_zmsg_HyphenEnd, g_zmsg_HyphenEndLength);
+            if (line == 0) {
+                result = SendPlayerMessageToAll(senderid, temp);
+            } else {
+                SendClientMessageToAll(-1, temp);
+            }
+            line++;
+        }
+        return result;
+    }
 	new length = strlen(message);
 
 	// shouldn't be shifted
